@@ -42,7 +42,7 @@ fish_data = ImageDataBunch.from_name_re(
 )
 fish_learner = ConvLearner(fish_data, models.resnet34)
 fish_learner.model.load_state_dict(
-    torch.load("usa-inaturalist-cats.pth", map_location="cpu")
+    torch.load("fish-finder.pkl", map_location="cpu")
 )
 
 

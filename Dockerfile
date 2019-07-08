@@ -11,7 +11,7 @@ RUN pip install fastai
 RUN pip install starlette uvicorn python-multipart aiohttp
 
 ADD fish.py fish.py
-ADD stage-2.pth stage-2.pth
+ADD fish-finder.pkl fish-finder.pkl
 
 # Run it once to trigger resnet download
 RUN python fish.py

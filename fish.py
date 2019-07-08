@@ -24,32 +24,25 @@ async def get_bytes(url):
 
 app = Starlette()
 
-cat_images_path = Path("/tmp")
-cat_fnames = [
+fish_images_path = Path("/tmp")
+fish_fnames = [
     "/{}_1.jpg".format(c)
     for c in [
-        "Bobcat",
-        "Mountain-Lion",
-        "Domestic-Cat",
-        "Western-Bobcat",
-        "Canada-Lynx",
-        "North-American-Mountain-Lion",
-        "Eastern-Bobcat",
-        "Central-American-Ocelot",
-        "Ocelot",
-        "Jaguar",
+        "Moorish Idol",
+        "Bluegill",
+        "Sergeant Major",   
     ]
 ]
-cat_data = ImageDataBunch.from_name_re(
-    cat_images_path,
-    cat_fnames,
+fish_data = ImageDataBunch.from_name_re(
+    fish_images_path,
+    fish_fnames,
     r"/([^/]+)_\d+.jpg$",
     ds_tfms=get_transforms(),
     size=224,
 )
-cat_learner = ConvLearner(cat_data, models.resnet34)
-cat_learner.model.load_state_dict(
-    torch.load("usa-inaturalist-cats.pth", map_location="cpu")
+fish_learner = ConvLearner(fish_data, models.resnet34)
+fish_learner.model.load_state_dict(
+    torch.load("fish-finder.pkl", map_location="cpu")
 )
 
 
@@ -68,10 +61,10 @@ async def classify_url(request):
 
 def predict_image_from_bytes(bytes):
     img = open_image(BytesIO(bytes))
-    losses = img.predict(cat_learner)
+    losses = img.predict(fish_learner)
     return JSONResponse({
         "predictions": sorted(
-            zip(cat_learner.data.classes, map(float, losses)),
+            zip(fish_learner.data.classes, map(float, losses)),
             key=lambda p: p[1],
             reverse=True
         )
